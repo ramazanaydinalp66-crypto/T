@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SheetJS for Excel Parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         .fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
@@ -39,7 +41,7 @@
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
                             <i class="fa-solid fa-user text-xs"></i>
                         </span>
-                        <input type="text" id="login-username" required placeholder="admin, ahmet, zeynep..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="text" id="login-username" required placeholder="Kullanıcı adınız" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
                 </div>
                 <div>
@@ -59,16 +61,6 @@
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </button>
             </form>
-
-            <div class="border-t border-slate-100 pt-4 text-xs text-slate-500 space-y-1.5">
-                <p class="font-semibold text-slate-700">Örnek Giriş Bilgileri:</p>
-                <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-600">
-                    <div><b>Admin:</b> admin / 1234</div>
-                    <div><b>Yazılımcı:</b> ahmet / 1234</div>
-                    <div><b>İK Uzmanı:</b> zeynep / 1234</div>
-                    <div><b>Eğitmen:</b> mehmet / 1234</div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -86,18 +78,8 @@
                     </div>
                 </div>
                 
-                <!-- Navigation Links -->
-                <nav class="hidden md:flex space-x-1">
-                    <button onclick="switchTab('anasayfa')" id="nav-anasayfa" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all bg-indigo-50 text-indigo-700">Anasayfa</button>
-                    <button onclick="switchTab('duyurular')" id="nav-duyurular" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-slate-100">Duyurular</button>
-                    <button onclick="switchTab('etkinlikler')" id="nav-etkinlikler" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-slate-100">Etkinlikler</button>
-                    <button onclick="switchTab('uyeler')" id="nav-uyeler" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-slate-100 admin-only">Üye Listesi</button>
-                    <button onclick="switchTab('profil')" id="nav-profil" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-slate-100 admin-only">Profilim</button>
-                    <button onclick="switchTab('giristakip')" id="nav-giristakip" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-slate-100 admin-only flex items-center space-x-1.5">
-                        <i class="fa-solid fa-shield-halved text-xs"></i>
-                        <span>Giriş Takip</span>
-                    </button>
-                </nav>
+                <!-- Navigation Links (Dynamic) -->
+                <nav id="desktop-nav" class="hidden md:flex space-x-1"></nav>
 
                 <!-- Action Button & User Info -->
                 <div class="flex items-center space-x-3">
@@ -107,29 +89,19 @@
                             <i class="fa-solid fa-right-from-bracket"></i>
                         </button>
                     </div>
-                    <!-- Mobile Menu Toggle -->
                     <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100">
                         <i class="fa-solid fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Mobile Navigation Menu Dropdown -->
-            <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 space-y-1">
-                <button onclick="switchTab('anasayfa'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-indigo-700 bg-indigo-50">Anasayfa</button>
-                <button onclick="switchTab('duyurular'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-slate-600 hover:bg-slate-100">Duyurular</button>
-                <button onclick="switchTab('etkinlikler'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-slate-600 hover:bg-slate-100">Yaklaşan Etkinlikler</button>
-                <button onclick="switchTab('uyeler'); toggleMobileMenu();" class="admin-only block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-slate-600 hover:bg-slate-100">Üye Listesi</button>
-                <button onclick="switchTab('profil'); toggleMobileMenu();" class="admin-only block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-slate-600 hover:bg-slate-100">Profilim</button>
-                <button onclick="switchTab('giristakip'); toggleMobileMenu();" class="admin-only block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-slate-600 hover:bg-slate-100">Giriş Takip Listesi</button>
-            </div>
+            <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 space-y-1"></div>
         </header>
 
         <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
             <!-- SECTION: ANASAYFA -->
             <section id="tab-anasayfa" class="tab-content space-y-8 fade-in">
-                <!-- Welcome Banner -->
                 <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-900 via-indigo-800 to-violet-900 text-white p-8 sm:p-10 shadow-xl">
                     <div class="absolute -right-12 -bottom-12 w-96 h-96 bg-indigo-600/30 rounded-full blur-3xl pointer-events-none"></div>
                     <div class="relative z-10 max-w-2xl space-y-3">
@@ -139,30 +111,23 @@
                     </div>
                 </div>
 
-                <!-- Quick Stats -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                            <i class="fa-solid fa-bullhorn"></i>
-                        </div>
+                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-bullhorn"></i></div>
                         <div>
                             <p class="text-sm font-medium text-slate-500">Görülebilir Duyurular</p>
                             <h3 id="stat-duyuru-count" class="text-2xl font-bold text-slate-800">0</h3>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </div>
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-calendar-days"></i></div>
                         <div>
                             <p class="text-sm font-medium text-slate-500">Yaklaşan Etkinlikler</p>
                             <h3 id="stat-etkinlik-count" class="text-2xl font-bold text-slate-800">0</h3>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                            <i class="fa-solid fa-user-check"></i>
-                        </div>
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-user-check"></i></div>
                         <div>
                             <p class="text-sm font-medium text-slate-500">Yetkili Kategorilerim</p>
                             <h3 id="stat-kategori-count" class="text-2xl font-bold text-slate-800">0</h3>
@@ -170,29 +135,30 @@
                     </div>
                 </div>
 
-                <!-- Recent Previews -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-bold text-lg text-slate-800 flex items-center space-x-2">
-                                <i class="fa-solid fa-bolt text-amber-500"></i>
-                                <span>İzinli Olduğunuz Son Duyurular</span>
-                            </h3>
-                            <button onclick="switchTab('duyurular')" class="text-sm text-indigo-600 hover:text-indigo-800 font-semibold">Tümü</button>
+                <div class="bg-gradient-to-br from-white to-indigo-50/50 rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md"><i class="fa-solid fa-table-list"></i></div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-900">Faaliyet ve Ödeme Hızlı Durum Özeti</h3>
+                                <p class="text-xs text-slate-500">Excel sekmelerinizdeki güncel faaliyet ve ödemelere hızlıca göz atın.</p>
+                            </div>
                         </div>
-                        <div id="home-duyurular-list" class="space-y-3"></div>
+                        <button onclick="switchTab('faaliyet')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center space-x-1.5">
+                            <span>Tümünü Yönet</span><i class="fa-solid fa-arrow-right"></i>
+                        </button>
                     </div>
+                    <div id="home-faaliyet-summary" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2"></div>
+                </div>
 
-                    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-bold text-lg text-slate-800 flex items-center space-x-2">
-                                <i class="fa-solid fa-calendar-check text-emerald-500"></i>
-                                <span>Yaklaşan Etkinlikler</span>
-                            </h3>
-                            <button onclick="switchTab('etkinlikler')" class="text-sm text-indigo-600 hover:text-indigo-800 font-semibold">Tümü</button>
-                        </div>
-                        <div id="home-etkinlikler-list" class="space-y-3"></div>
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-lg text-slate-800 flex items-center space-x-2">
+                            <i class="fa-solid fa-calendar-check text-emerald-500"></i><span>Yaklaşan Etkinlikler</span>
+                        </h3>
+                        <button onclick="switchTab('etkinlikler')" class="text-sm text-indigo-600 hover:text-indigo-800 font-semibold">Tümü</button>
                     </div>
+                    <div id="home-etkinlikler-list" class="space-y-3 grid grid-cols-1 md:grid-cols-3 gap-3"></div>
                 </div>
             </section>
 
@@ -206,12 +172,10 @@
                     <div class="flex items-center space-x-3">
                         <input type="text" id="duyuru-search" oninput="renderDuyurular()" placeholder="Duyurularda ara..." class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-64">
                         <button onclick="openDuyuruModal()" id="btn-add-duyuru" class="hidden bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center space-x-2 shrink-0">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Duyuru Ekle</span>
+                            <i class="fa-solid fa-plus"></i><span>Duyuru Ekle</span>
                         </button>
                     </div>
                 </div>
-
                 <div id="duyurular-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </section>
 
@@ -225,13 +189,48 @@
                     <div class="flex items-center space-x-3">
                         <input type="text" id="etkinlik-search" oninput="renderEtkinlikler()" placeholder="Etkinlik ara..." class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-64">
                         <button onclick="openEtkinlikModal()" id="btn-add-etkinlik" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center space-x-2 shrink-0">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Yeni Ekle</span>
+                            <i class="fa-solid fa-plus"></i><span>Yeni Ekle</span>
                         </button>
                     </div>
                 </div>
-
                 <div id="etkinlikler-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </section>
+
+            <!-- SECTION: FAALİYET -->
+            <section id="tab-faaliyet" class="tab-content hidden space-y-6 fade-in">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Faaliyet, Ödeme, Kumbara ve Rehber Yönetimi</h2>
+                        <p class="text-sm text-slate-500">Excel sekmeleri üzerinden özel formatlı bireysel veya toplu WhatsApp mesajları gönderebilirsiniz.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <input type="text" id="faaliyet-search" oninput="filterFaaliyetTable()" placeholder="Tabloda ara..." class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-48">
+                        <button onclick="sendBulkWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center space-x-2 shrink-0 transition-all">
+                            <i class="fa-brands fa-whatsapp text-lg"></i><span>Seçilenlere Toplu Mesaj</span>
+                        </button>
+                        <label id="excel-upload-container" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center space-x-2 cursor-pointer shrink-0 transition-all">
+                            <i class="fa-solid fa-file-excel"></i><span>Excel Yükle</span>
+                            <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelUpload(event)">
+                        </label>
+                    </div>
+                </div>
+                <div id="excel-sheet-tabs" class="flex flex-wrap gap-2 border-b border-slate-200 pb-3"></div>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead id="faaliyet-thead">
+                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider font-semibold">
+                                    <th class="py-3.5 px-4 text-center">Seç</th>
+                                    <th class="py-3.5 px-4">Mesaj</th>
+                                    <th class="py-3.5 px-6">Bilgiler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="faaliyet-tbody" class="divide-y divide-slate-100 text-sm text-slate-700">
+                                <tr><td colspan="3" class="py-8 px-6 text-center text-slate-400">Henüz bir Excel dosyası yüklenmedi. Yukarıdaki "Excel Yükle" butonunu kullanın.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </section>
 
             <!-- SECTION: ÜYE LİSTESİ -->
@@ -239,14 +238,12 @@
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900">Üye Listesi ve Görev Tanımları</h2>
-                        <p class="text-sm text-slate-500">Platformdaki üyeler, e-posta adresleri, görevleri ve görebildikleri kategoriler.</p>
+                        <p class="text-sm text-slate-500">Platformdaki üyeler, roller ve menü erişim yetkileri.</p>
                     </div>
                     <button onclick="openUserModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center space-x-2">
-                        <i class="fa-solid fa-user-plus text-xs"></i>
-                        <span>Yeni Üye Ekle</span>
+                        <i class="fa-solid fa-user-plus text-xs"></i><span>Yeni Üye Ekle</span>
                     </button>
                 </div>
-
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
@@ -254,7 +251,6 @@
                                 <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider font-semibold">
                                     <th class="py-3.5 px-6">Ad Soyad / Kullanıcı</th>
                                     <th class="py-3.5 px-6">E-posta</th>
-                                    <th class="py-3.5 px-6">Şifre</th>
                                     <th class="py-3.5 px-6">Görev Tanımı</th>
                                     <th class="py-3.5 px-6">Görülebilir Kategoriler</th>
                                     <th class="py-3.5 px-6">Rolü</th>
@@ -271,15 +267,12 @@
             <section id="tab-profil" class="tab-content hidden space-y-6 fade-in max-w-2xl mx-auto">
                 <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
                     <div class="flex items-center space-x-4 border-b border-slate-100 pb-6">
-                        <div class="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-2xl font-bold shadow-lg shadow-indigo-200">
-                            <i class="fa-solid fa-user-shield"></i>
-                        </div>
+                        <div class="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-2xl font-bold shadow-lg shadow-indigo-200"><i class="fa-solid fa-user-shield"></i></div>
                         <div>
                             <h2 id="profile-name" class="text-2xl font-bold text-slate-900"></h2>
                             <p id="profile-role-desc" class="text-sm text-indigo-600 font-medium"></p>
                         </div>
                     </div>
-
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
@@ -291,17 +284,14 @@
                                 <input type="text" id="profile-email" readonly class="w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-600 font-medium cursor-not-allowed">
                             </div>
                         </div>
-
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Görev Tanımı</label>
                             <input type="text" id="profile-task" readonly class="w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-600 font-medium cursor-not-allowed">
                         </div>
-
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Erişebileceğiniz Kategoriler</label>
                             <div id="profile-categories" class="flex flex-wrap gap-2"></div>
                         </div>
-
                         <div class="border-t border-slate-100 pt-6 space-y-4">
                             <h3 class="font-bold text-slate-900 text-base">Şifre Değiştir</h3>
                             <form onsubmit="handlePasswordChange(event)" class="space-y-3">
@@ -316,7 +306,7 @@
                 </div>
             </section>
 
-            <!-- SECTION: GİRİŞ TAKİP LİSTESİ -->
+            <!-- SECTION: GİRİŞ TAKİP -->
             <section id="tab-giristakip" class="tab-content hidden space-y-6 fade-in">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
@@ -324,11 +314,9 @@
                         <p class="text-sm text-slate-500">Sisteme giriş yapan ve çıkış yapan tüm kullanıcıların erişim logları.</p>
                     </div>
                     <button onclick="clearLoginLogs()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center space-x-2 border border-rose-200">
-                        <i class="fa-solid fa-trash-can"></i>
-                        <span>Kayıtları Temizle</span>
+                        <i class="fa-solid fa-trash-can"></i><span>Kayıtları Temizle</span>
                     </button>
                 </div>
-
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
@@ -361,17 +349,40 @@
         </footer>
     </div>
 
-    <!-- MODAL: YENİ ÜYE EKLE / DÜZENLE -->
-    <div id="user-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl fade-in">
+    <!-- MODAL: TAHSİLAT -->
+    <div id="tahsilat-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl fade-in max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                <h3 id="user-modal-title" class="text-xl font-bold text-slate-900 flex items-center space-x-2">
-                    <i class="fa-solid fa-user-plus text-indigo-600"></i>
-                    <span>Yeni Üye Ekle</span>
-                </h3>
-                <button onclick="closeUserModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
+                <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2"><i class="fa-solid fa-receipt text-indigo-600"></i><span>Tahsilat ve Ödeme Detayları</span></h3>
+                <button onclick="closeTahsilatModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-4">
+                <p id="tahsilat-person-info" class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl"></p>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider font-semibold">
+                                    <th class="py-3 px-4">Yıl</th><th class="py-3 px-4">Faaliyet</th><th class="py-3 px-4">Ref</th><th class="py-3 px-4">Ödenen</th><th class="py-3 px-4">Tür</th><th class="py-3 px-4">Tarih</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tahsilat-tbody" class="divide-y divide-slate-100 text-xs text-slate-700"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end pt-2">
+                <button type="button" onclick="closeTahsilatModal()" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition-all">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ÜYE EKLE / DÜZENLE -->
+    <div id="user-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl fade-in max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                <h3 id="user-modal-title" class="text-xl font-bold text-slate-900 flex items-center space-x-2"><i class="fa-solid fa-user-plus text-indigo-600"></i><span>Yeni Üye Ekle</span></h3>
+                <button onclick="closeUserModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <form id="user-form" onsubmit="handleUserSubmit(event)" class="space-y-4">
                 <input type="hidden" id="edit-original-username">
@@ -396,23 +407,24 @@
                     </div>
                 </div>
                 <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Rol</label>
+                    <select id="modal-user-role" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="Üye">Üye</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Görev Tanımı</label>
                     <input type="text" id="modal-user-task" required placeholder="Örn: Proje Yöneticisi" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Rol</label>
-                        <select id="modal-user-role" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="Üye">Üye</option>
-                            <option value="Admin">Admin</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Kategoriler (Yetkiler)</label>
-                        <div class="text-[11px] text-slate-500 mb-1">Seçim için kutucukları işaretleyin:</div>
-                    </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Görülebilir Kategoriler</label>
+                    <div id="modal-user-categories-container" class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs"></div>
                 </div>
-                <div id="modal-user-categories-container" class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs"></div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Görülebilir Menüler (İzinler)</label>
+                    <div id="modal-user-menus-container" class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs"></div>
+                </div>
                 <div class="flex justify-end space-x-3 pt-2">
                     <button type="button" onclick="closeUserModal()" class="px-5 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-all">İptal</button>
                     <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-sm font-medium text-white shadow-md shadow-indigo-100 transition-all">Kaydet</button>
@@ -425,13 +437,8 @@
     <div id="etkinlik-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl fade-in">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                <h3 id="etkinlik-modal-title" class="text-xl font-bold text-slate-900 flex items-center space-x-2">
-                    <i class="fa-solid fa-calendar-days text-emerald-600"></i>
-                    <span>Yeni Etkinlik Ekle</span>
-                </h3>
-                <button onclick="closeEtkinlikModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
+                <h3 id="etkinlik-modal-heading" class="text-xl font-bold text-slate-900 flex items-center space-x-2"><i class="fa-solid fa-calendar-days text-emerald-600"></i><span>Yeni Etkinlik Ekle</span></h3>
+                <button onclick="closeEtkinlikModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <form id="etkinlik-form" onsubmit="handleEtkinlikSubmit(event)" class="space-y-4">
                 <input type="hidden" id="edit-original-etkinlik-id">
@@ -446,7 +453,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Kategori</label>
-                        <input type="text" id="etkinlik-modal-category" required placeholder="Örn: Teknoloji, Seminer" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="text" id="etkinlik-modal-category" required placeholder="Örn: Teknoloji" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
                 </div>
                 <div>
@@ -469,13 +476,8 @@
     <div id="duyuru-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl fade-in">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                <h3 id="duyuru-modal-title" class="text-xl font-bold text-slate-900 flex items-center space-x-2">
-                    <i class="fa-solid fa-bullhorn text-amber-600"></i>
-                    <span>Yeni Duyuru Ekle</span>
-                </h3>
-                <button onclick="closeDuyuruModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
+                <h3 id="duyuru-modal-heading" class="text-xl font-bold text-slate-900 flex items-center space-x-2"><i class="fa-solid fa-bullhorn text-amber-600"></i><span>Yeni Duyuru Ekle</span></h3>
+                <button onclick="closeDuyuruModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <form id="duyuru-form" onsubmit="handleDuyuruSubmit(event)" class="space-y-4">
                 <input type="hidden" id="edit-original-duyuru-id">
@@ -487,12 +489,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Kategori</label>
                         <select id="duyuru-modal-category" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="Genel">Genel</option>
-                            <option value="Önemli">Önemli</option>
-                            <option value="Sistem">Sistem</option>
-                            <option value="Yazılım">Yazılım</option>
-                            <option value="İK">İK</option>
-                            <option value="Eğitim">Eğitim</option>
+                            <option value="Genel">Genel</option><option value="Önemli">Önemli</option><option value="Sistem">Sistem</option><option value="Yazılım">Yazılım</option><option value="İK">İK</option><option value="Eğitim">Eğitim</option>
                         </select>
                     </div>
                     <div>
@@ -517,15 +514,11 @@
         <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl fade-in">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                 <span id="detail-badge" class="text-xs font-semibold px-3 py-1 rounded-full"></span>
-                <button onclick="closeDetailModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
+                <button onclick="closeDetailModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="space-y-3">
                 <h3 id="detail-title" class="text-xl font-bold text-slate-900"></h3>
-                <p id="detail-date" class="text-xs text-slate-400 flex items-center space-x-1">
-                    <i class="fa-regular fa-clock"></i> <span id="detail-date-text"></span>
-                </p>
+                <p class="text-xs text-slate-400 flex items-center space-x-1"><i class="fa-regular fa-clock"></i> <span id="detail-date-text"></span></p>
                 <p id="detail-desc" class="text-sm text-slate-600 leading-relaxed pt-2"></p>
             </div>
             <div class="flex justify-end pt-2">
@@ -535,18 +528,27 @@
     </div>
 
     <script>
-        // Üye ve Rol Veritabanı
-        let users = [
-            { username: "admin", pass: "1234", name: "Sistem Yöneticisi", email: "admin@takipport.com", task: "Genel Sistem Yönetimi", categories: ["Genel", "Sistem", "Yazılım", "İK", "Eğitim", "Önemli"], role: "Admin" },
-            { username: "ahmet", pass: "1234", name: "Ahmet Yılmaz", email: "ahmet@takipport.com", task: "Kıdemli Yazılım Geliştirici", categories: ["Genel", "Sistem", "Yazılım", "Önemli"], role: "Üye" },
-            { username: "zeynep", pass: "1234", name: "Zeynep Demir", email: "zeynep@takipport.com", task: "İnsan Kaynakları Uzmanı", categories: ["Genel", "İK", "Eğitim", "Önemli"], role: "Üye" },
-            { username: "mehmet", pass: "1234", name: "Mehmet Kaya", email: "mehmet@takipport.com", task: "Eğitmen & Teknik Danışman", categories: ["Genel", "Eğitim", "Yazılım"], role: "Üye" },
-            { username: "elif", pass: "1234", name: "Elif Çelik", email: "elif@takipport.com", task: "Destek ve Operasyon Sorumlusu", categories: ["Genel"], role: "Üye" }
+        const allMenus = [
+            { id: "anasayfa", name: "Anasayfa", icon: "fa-compass" },
+            { id: "duyurular", name: "Duyurular", icon: "fa-bullhorn" },
+            { id: "etkinlikler", name: "Etkinlikler", icon: "fa-calendar-days" },
+            { id: "faaliyet", name: "Faaliyet / Ödeme / Kumbara / Rehber", icon: "fa-table-list" },
+            { id: "uyeler", name: "Üye Listesi", icon: "fa-users" },
+            { id: "profil", name: "Profilim", icon: "fa-user" },
+            { id: "giristakip", name: "Giriş Takip", icon: "fa-shield-halved" }
+        ];
+
+        let users = JSON.parse(localStorage.getItem('takipport_users')) || [
+            { username: "admin", pass: "1234", name: "Sistem Yöneticisi", email: "admin@takipport.com", task: "Genel Sistem Yönetimi", categories: ["Genel", "Sistem", "Yazılım", "İK", "Eğitim", "Önemli"], role: "Admin", allowedMenus: ["anasayfa", "duyurular", "etkinlikler", "faaliyet", "uyeler", "profil", "giristakip"] },
+            { username: "ahmet", pass: "1234", name: "Ahmet Yılmaz", email: "ahmet@takipport.com", task: "Kıdemli Yazılım Geliştirici", categories: ["Genel", "Sistem", "Yazılım", "Önemli"], role: "Üye", allowedMenus: ["anasayfa", "duyurular", "etkinlikler", "faaliyet"] },
+            { username: "zeynep", pass: "1234", name: "Zeynep Demir", email: "zeynep@takipport.com", task: "İnsan Kaynakları Uzmanı", categories: ["Genel", "İK", "Eğitim", "Önemli"], role: "Üye", allowedMenus: ["anasayfa", "duyurular", "etkinlikler", "faaliyet", "profil"] },
+            { username: "mehmet", pass: "1234", name: "Mehmet Kaya", email: "mehmet@takipport.com", task: "Eğitmen & Teknik Danışman", categories: ["Genel", "Eğitim", "Yazılım"], role: "Üye", allowedMenus: ["anasayfa", "duyurular", "etkinlikler", "faaliyet"] },
+            { username: "elif", pass: "1234", name: "Elif Çelik", email: "elif@takipport.com", task: "Destek ve Operasyon Sorumlusu", categories: ["Genel"], role: "Üye", allowedMenus: ["anasayfa", "etkinlikler", "faaliyet"] }
         ];
 
         const allAvailableCategories = ["Genel", "Sistem", "Yazılım", "İK", "Eğitim", "Önemli", "Teknoloji", "Sunum"];
 
-        let duyurular = [
+        let duyurular = JSON.parse(localStorage.getItem('takipport_duyurular')) || [
             { id: 1, title: "Yaz Dönemi Çalışma Takvimi Güncellendi", category: "Önemli", date: "03 Ekim 2026", desc: "Yeni dönem çalışma takvimi yönetim kurulu kararıyla güncellenmiştir. Tüm departmanların dikkatle incelemesi rica olunur." },
             { id: 2, title: "Sunucu Bakım ve Sürüm Güncellemesi", category: "Sistem", date: "01 Ekim 2026", desc: "Altyapımızı güçlendirmek amacıyla bu hafta sonu 02:00 - 05:00 saatleri arasında kısa süreli kesintiler yaşanabilir." },
             { id: 3, title: "Yeni React ve Tailwind Atölye Çalışması", category: "Yazılım", date: "30 Eylül 2026", desc: "Yazılım ekibi için planlanan modern arayüz geliştirme eğitim programı detayları paylaşılmıştır." },
@@ -554,24 +556,46 @@
             { id: 5, title: "Liderlik ve İletişim Semineri", category: "Eğitim", date: "25 Eylül 2026", desc: "Tüm katılımcılara açık olacak olan gelişim semineri önümüzdeki Salı günü konferans salonunda." }
         ];
 
-        let etkinlikler = [
-            { id: 1, title: "Ekim etkinliği", date: "07 Ekim 2026 - 10:00", location: "balık... et....", category: "Hayır Çarşısı", desc: "yapılan bu etkinlikte yapıldı..." },
+        let etkinlikler = JSON.parse(localStorage.getItem('takipport_etkinlikler')) || [
+            { id: 1, title: "Ekim etkinliği", date: "07 Ekim 2026 - 10:00", location: "balık... et....", category: "Hayır Çarşısı", desc: "yapılan bu etkinlik te yapıldı..." },
             { id: 2, title: "Yapay Zeka ve Geleceğin İş Modelleri", date: "15 Ekim 2026 - 14:00", location: "Konferans Salonu A", category: "Teknoloji", desc: "Yapay zeka araçlarının iş süreçlerine entegrasyonu." },
             { id: 3, title: "Sonbahar Proje Sunumları", date: "22 Ekim 2026 - 10:30", location: "Ana Salon", category: "Sunum", desc: "Ekiplerin son çeyrekte geliştirdiği yenilikçi projeler." },
             { id: 4, title: "Yazılım Ekibi Sprint Değerlendirmesi", date: "28 Ekim 2026 - 15:00", location: "Toplantı Odası 2", category: "Yazılım", desc: "Sprint hedefleri ve yeni mimari kararların gözden geçirilmesi." }
         ];
 
-        let loginLogs = [
+        let loginLogs = JSON.parse(localStorage.getItem('loginLogs')) || [
             { username: "admin", name: "Sistem Yöneticisi", action: "Başarılı Giriş", info: "127.0.0.1 (Admin Oturumu)", date: "03 Ekim 2026 - 18:10" }
         ];
 
         let currentUser = null;
+        let excelWorkbookCache = null;
+        let currentActiveSheetName = "";
 
         window.onload = function() {
             const savedUser = sessionStorage.getItem('currentUser');
             if(savedUser) {
                 currentUser = JSON.parse(savedUser);
                 startApp();
+            }
+
+            const savedExcelBase64 = localStorage.getItem('excelFileBase64');
+            if(savedExcelBase64) {
+                try {
+                    const binaryString = atob(savedExcelBase64);
+                    const len = binaryString.length;
+                    const bytes = new Uint8Array(len);
+                    for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
+                    excelWorkbookCache = XLSX.read(bytes, { type: 'array' });
+                    const sheetNames = excelWorkbookCache.SheetNames;
+                    if(sheetNames && sheetNames.length > 0) {
+                        renderExcelSheetTabs(sheetNames);
+                        currentActiveSheetName = sheetNames[0];
+                        switchExcelSheet(currentActiveSheetName);
+                        renderHomeFaaliyetSummary();
+                    }
+                } catch(e) {
+                    console.error("Kayıtlı Excel yüklenemedi:", e);
+                }
             }
         };
 
@@ -594,7 +618,7 @@
                     info: "Güvenli Oturum",
                     date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }) + " - " + new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
                 });
-
+                localStorage.setItem('loginLogs', JSON.stringify(loginLogs));
                 startApp();
             } else {
                 errBox.classList.remove('hidden');
@@ -610,8 +634,8 @@
                     info: "Oturum Kapatıldı",
                     date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }) + " - " + new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
                 });
+                localStorage.setItem('loginLogs', JSON.stringify(loginLogs));
             }
-
             sessionStorage.removeItem('currentUser');
             currentUser = null;
             document.getElementById('app-wrapper').classList.add('hidden');
@@ -628,22 +652,30 @@
             document.getElementById('logged-user-name').innerText = currentUser.name;
             document.getElementById('header-user-role').innerText = currentUser.role + " • " + currentUser.task;
 
-            if(currentUser.role === 'Admin') {
-                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-                document.getElementById('btn-add-etkinlik').classList.remove('hidden');
-                document.getElementById('btn-add-duyuru').classList.remove('hidden');
+            buildNavigation();
+
+            const btnAddDuyuru = document.getElementById('btn-add-duyuru');
+            const btnAddEtkinlik = document.getElementById('btn-add-etkinlik');
+            const excelUploadContainer = document.getElementById('excel-upload-container');
+
+            if (currentUser.role === 'Admin') {
+                if (btnAddDuyuru) btnAddDuyuru.classList.remove('hidden');
+                if (btnAddEtkinlik) btnAddEtkinlik.classList.remove('hidden');
+                if (excelUploadContainer) excelUploadContainer.classList.remove('hidden');
             } else {
-                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
-                document.getElementById('btn-add-etkinlik').classList.add('hidden');
-                document.getElementById('btn-add-duyuru').classList.add('hidden');
-                const activeTab = document.querySelector('.tab-content:not(.hidden)').id;
-                if(activeTab === 'tab-uyeler' || activeTab === 'tab-profil' || activeTab === 'tab-giristakip') {
-                    switchTab('anasayfa');
-                }
+                if (btnAddDuyuru) btnAddDuyuru.classList.add('hidden');
+                if (btnAddEtkinlik) btnAddEtkinlik.classList.add('hidden');
+                if (excelUploadContainer) excelUploadContainer.classList.add('hidden');
+            }
+
+            const activeTabElement = document.querySelector('.tab-content:not(.hidden)');
+            const activeTabId = activeTabElement ? activeTabElement.id.replace('tab-', '') : 'anasayfa';
+            if(!currentUser.allowedMenus.includes(activeTabId)) {
+                switchTab('anasayfa');
             }
 
             document.getElementById('welcome-title').innerText = "Hoş Geldiniz, " + currentUser.name;
-            document.getElementById('welcome-desc').innerText = "Görev tanımınız (" + currentUser.task + ") doğrultusunda yetkili olduğunuz kategoriler filtrelenmiştir.";
+            document.getElementById('welcome-desc').innerText = "Görev tanımınız (" + currentUser.task + ") doğrultusunda yetkili olduğunuz alanlar filtrelenmiştir.";
             document.getElementById('user-task-badge').innerText = currentUser.task;
             document.getElementById('stat-kategori-count').innerText = currentUser.categories.length;
 
@@ -653,14 +685,46 @@
             renderProfil();
             renderLoginLogs();
             renderHomeLists();
+            renderHomeFaaliyetSummary();
+            
+            if (excelWorkbookCache && currentActiveSheetName) {
+                switchExcelSheet(currentActiveSheetName);
+            }
+        }
+
+        function buildNavigation() {
+            const desktopNav = document.getElementById('desktop-nav');
+            const mobileMenu = document.getElementById('mobile-menu');
+            desktopNav.innerHTML = '';
+            mobileMenu.innerHTML = '';
+
+            const userMenus = allMenus.filter(m => currentUser.allowedMenus.includes(m.id));
+
+            userMenus.forEach((m, index) => {
+                const isFirst = index === 0;
+                const activeClass = isFirst ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100';
+
+                const btn = document.createElement('button');
+                btn.onclick = () => switchTab(m.id);
+                btn.id = 'nav-' + m.id;
+                btn.className = `nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all ${activeClass}`;
+                btn.innerHTML = m.id === 'giristakip' ? `<i class="fa-solid fa-shield-halved text-xs mr-1"></i><span>${m.name}</span>` : m.name;
+                desktopNav.appendChild(btn);
+
+                const mBtn = document.createElement('button');
+                mBtn.onclick = () => { switchTab(m.id); toggleMobileMenu(); };
+                mBtn.className = `block w-full text-left px-3 py-2 rounded-lg text-base font-medium ${isFirst ? 'text-indigo-700 bg-indigo-50' : 'text-slate-600 hover:bg-slate-100'}`;
+                mBtn.innerText = m.name;
+                mobileMenu.appendChild(mBtn);
+            });
         }
 
         function switchTab(tabId) {
-            if(tabId !== 'anasayfa' && tabId !== 'duyurular' && tabId !== 'etkinlikler' && currentUser.role !== 'Admin') {
-                return;
-            }
+            if(!currentUser.allowedMenus.includes(tabId)) return;
+
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const targetTab = document.getElementById('tab-' + tabId);
+            if(targetTab) targetTab.classList.remove('hidden');
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('bg-indigo-50', 'text-indigo-700');
@@ -684,16 +748,359 @@
             return duyurular.filter(d => currentUser.categories.includes(d.category));
         }
 
-        // Render Duyurular
+        function handleExcelUpload(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    let binary = "";
+                    for (let i = 0; i < data.byteLength; i++) binary += String.fromCharCode(data[i]);
+                    localStorage.setItem('excelFileBase64', btoa(binary));
+
+                    excelWorkbookCache = XLSX.read(data, { type: 'array' });
+                    const sheetNames = excelWorkbookCache.SheetNames;
+                    if(!sheetNames || sheetNames.length === 0) {
+                        alert("Yüklenen Excel dosyasında sayfa bulunamadı.");
+                        return;
+                    }
+                    renderExcelSheetTabs(sheetNames);
+                    switchExcelSheet(sheetNames[0]);
+                    renderHomeFaaliyetSummary();
+                } catch(err) {
+                    console.error(err);
+                    alert("Excel dosyası okunurken bir hata oluştu.");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function renderExcelSheetTabs(sheetNames) {
+            const tabsContainer = document.getElementById('excel-sheet-tabs');
+            tabsContainer.innerHTML = '';
+            sheetNames.forEach(sheetName => {
+                const btn = document.createElement('button');
+                btn.id = 'sheet-tab-' + sheetName;
+                btn.onclick = () => switchExcelSheet(sheetName);
+                btn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm flex items-center space-x-1.5";
+                btn.innerHTML = `<i class="fa-solid fa-table text-indigo-600"></i><span>${sheetName}</span>`;
+                tabsContainer.appendChild(btn);
+            });
+        }
+
+        function switchExcelSheet(sheetName) {
+            currentActiveSheetName = sheetName;
+            if(excelWorkbookCache && excelWorkbookCache.SheetNames) {
+                excelWorkbookCache.SheetNames.forEach(name => {
+                    const btn = document.getElementById('sheet-tab-' + name);
+                    if(btn) {
+                        btn.className = name === sheetName ? 
+                            "px-4 py-2 rounded-xl text-xs font-bold transition-all border border-indigo-300 bg-indigo-600 text-white shadow-md flex items-center space-x-1.5" : 
+                            "px-4 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm flex items-center space-x-1.5";
+                    }
+                });
+            }
+
+            const worksheet = excelWorkbookCache.Sheets[sheetName];
+            let jsonResult = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+            if (currentUser && currentUser.role !== 'Admin' && !sheetName.toLowerCase().includes('rehber')) {
+                jsonResult = jsonResult.filter(item => {
+                    const takipEdenKey = Object.keys(item).find(k => {
+                        const lk = k.toLowerCase().replace(/[^a-zçğİıöşü]/g, '');
+                        return lk.includes('takipedən') || lk.includes('takipeden');
+                    });
+                    if (takipEdenKey) {
+                        const cellVal = String(item[takipEdenKey] || '').trim().toLowerCase();
+                        const myName = currentUser.name.trim().toLowerCase();
+                        return cellVal === myName || cellVal.includes(myName);
+                    }
+                    return false;
+                });
+            }
+            renderDynamicTable(jsonResult, sheetName);
+        }
+
+        function parseExcelDate(val) {
+            if (!val) return "";
+            let strVal = String(val).trim();
+            if (!isNaN(strVal) && Number(strVal) > 1000) {
+                const excelDate = new Date((Number(strVal) - (25567 + 2)) * 86400 * 1000);
+                if (!isNaN(excelDate.getTime())) return excelDate.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+            return strVal;
+        }
+
+        function extractCariAdiSoyadi(item) {
+            for (let k in item) {
+                const lk = k.toLowerCase().replace(/[^a-zçğİıöşü]/g, '');
+                if (lk.includes('cariadi') || lk.includes('carisoyadi') || lk.includes('carisoyad') || lk.includes('adisoyadi') || lk.includes('adsoyad')) {
+                    if (item[k]) return String(item[k]).trim();
+                }
+            }
+            for (let k in item) {
+                const lk = k.toLowerCase().replace(/[^a-zçğİıöşü]/g, '');
+                if (lk === 'ad' || lk === 'isim' || lk === 'uyeadi') {
+                    if (item[k]) return String(item[k]).trim();
+                }
+            }
+            for (let k in item) {
+                if (typeof item[k] === 'string' && item[k].trim() !== '') return item[k].trim();
+            }
+            return "";
+        }
+
+        function findPhoneNumberByCariAdi(targetName) {
+            if (!excelWorkbookCache || !targetName) return null;
+            for (let sheetName of excelWorkbookCache.SheetNames) {
+                const rows = XLSX.utils.sheet_to_json(excelWorkbookCache.Sheets[sheetName], { defval: "" });
+                for (let row of rows) {
+                    let rowCariName = extractCariAdiSoyadi(row);
+                    if (rowCariName && rowCariName.toLowerCase() === targetName.toLowerCase()) {
+                        for (let k in row) {
+                            const lk = k.toLowerCase().replace(/[^a-zçğİıöşü]/g, '');
+                            if (lk.includes('tel') || lk.includes('gsm') || lk.includes('telefon') || lk.includes('numara')) {
+                                let phone = String(row[k] || '').replace(/[^0-9+]/g, '');
+                                if (phone) {
+                                    if (phone.startsWith('0')) phone = '9' + phone;
+                                    if (phone.length === 10 && phone.startsWith('5')) phone = '90' + phone;
+                                    return phone;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        function generateRowMessage(item, sheetName) {
+            let name = extractCariAdiSoyadi(item) || "Sayın Üyemiz";
+            const sName = sheetName.toLowerCase();
+
+            if (sName.includes('faaliyet')) {
+                let yil = "2026", altFaaliyet = "KUMANYA", ifade = "", odenen = "2.500 TL", kalan = "2.000 TL";
+                const columns = Object.keys(item);
+                // Faaliyet mesajında A sütunu yıl, C sütunu faaliyet adı, D sütunu ise yıldan önceki ifade içindir.
+                if (columns.length > 0 && item[columns[0]] !== "") yil = item[columns[0]] || yil;
+                if (columns.length > 2 && item[columns[2]] !== "") altFaaliyet = item[columns[2]] || altFaaliyet;
+                if (columns.length > 3 && item[columns[3]] !== "") ifade = String(item[columns[3]] || "").trim();
+                for (let k in item) {
+                    const lk = k.toLowerCase().replace(/[^a-zçğıöşü]/g, '');
+                    if (lk.includes('odenen') || lk.includes('tahsil') || lk.includes('alinan')) odenen = item[k] || odenen;
+                    if (lk.includes('kalan') || lk.includes('borc') || lk.includes('bakiye')) kalan = item[k] || kalan;
+                }
+                const yilOncesiIfade = ifade ? `${ifade.replace(/\s+$/, '')} ` : "";
+                return `Sayın ${name},\n\nTakipPort faaliyet kaydınızla ilgili bilgilendirme:\n\n${yilOncesiIfade}${yil} yılı ${altFaaliyet} faaliyeti için ödenen tutar ${odenen} olup kalan ödeme tutarınız ${kalan}’dir.\n\nİyi günler dileriz.`;
+            }
+
+            if (sName.includes('odeme') || sName.includes('tahsilat')) {
+                let alan = "İş Alanı", miktar = "8.000 TL";
+                for (let k in item) {
+                    const lk = k.toLowerCase().replace(/[^a-zçğıöşü]/g, '');
+                    if (lk.includes('is') || lk.includes('alan') || lk.includes('faaliyet') || lk.includes('aciklama')) alan = item[k] || alan;
+                    if (lk.includes('odenen') || lk.includes('tutar') || lk.includes('miktar') || lk.includes('alinan') || lk.includes('tahsil')) miktar = item[k] || miktar;
+                }
+                miktar = String(miktar).trim().replace(/\s*tl\s*$/i, '');
+                return `Sayın ${name},\n\nTakipPort (Ödeme) kaydınızla ilgili bilgiler:\n\n${alan} faaliyetinizden ${miktar} TL tahsil edilmiştir.\n\nİyi günler dileriz.`;
+            }
+
+            if (sName.includes('kumbara')) {
+                let miktar = "1.002,06 tl", tarih = "Belirtilen";
+                for (let k in item) {
+                    const lk = k.toLowerCase().replace(/[^a-zçğİıöşü]/g, '');
+                    if (lk.includes('miktar') || lk.includes('tutar') || lk.includes('cikan') || lk.includes('para')) miktar = item[k] || miktar;
+                    if (lk.includes('tarih')) tarih = parseExcelDate(item[k]) || tarih;
+                }
+                return `Sayın ${name},\n\nTakipPort (Kumbara) kaydınızla ilgili bilgiler:\n\n${tarih} tarihindeki kumbaranızdan çıkan miktar ${miktar} dir\n\nAllah razı olsun efendim`;
+            }
+
+            let details = [];
+            for (let k in item) {
+                const lk = k.toLowerCase().replace(/[^a-zçğİıöşü]/g, '');
+                if (item[k] !== "" && !lk.includes('takipeden') && !lk.includes('sec')) {
+                    let val = k.toLowerCase().includes('tarih') ? parseExcelDate(item[k]) : item[k];
+                    details.push(`• ${k}: ${val}`);
+                }
+            }
+            return `Sayın ${name},\n\nTakipPort (${sheetName}) kaydınızla ilgili bilgiler:\n\n${details.join('\n')}\n\nİyi günler dileriz.`;
+        }
+
+        function sendWhatsAppMessage(itemJsonStr, sheetName) {
+            const item = JSON.parse(decodeURIComponent(itemJsonStr));
+            let name = extractCariAdiSoyadi(item);
+            if (!name) { alert("Bu satırda geçerli bir Cari Adı Soyadı bulunamadı."); return; }
+            const phone = findPhoneNumberByCariAdi(name);
+            if (!phone) { alert(`Rehber sekmesinde veya Excel dosyalarında "${name}" cari adına ait telefon numarası bulunamadı!`); return; }
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(generateRowMessage(item, sheetName))}`, '_blank');
+        }
+
+        function sendBulkWhatsApp() {
+            const checkboxes = document.querySelectorAll('.row-select-checkbox:checked');
+            if (checkboxes.length === 0) { alert("Lütfen toplu mesaj göndermek için tablodan en az bir kişi seçin!"); return; }
+            checkboxes.forEach((chk, index) => {
+                const item = JSON.parse(decodeURIComponent(chk.dataset.item));
+                let name = extractCariAdiSoyadi(item);
+                if (name) {
+                    const phone = findPhoneNumberByCariAdi(name);
+                    if (phone) {
+                        setTimeout(() => {
+                            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(generateRowMessage(item, currentActiveSheetName))}`, '_blank');
+                        }, index * 800);
+                    }
+                }
+            });
+            alert(`${checkboxes.length} kişi için WhatsApp mesaj pencereleri hazırlandı.`);
+        }
+
+        function renderDynamicTable(dataArray, sheetName = currentActiveSheetName) {
+            const thead = document.getElementById('faaliyet-thead');
+            const tbody = document.getElementById('faaliyet-tbody');
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            if(!dataArray || dataArray.length === 0) {
+                thead.innerHTML = `<tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider font-semibold"><th class="py-3.5 px-6">Bilgi</th></tr>`;
+                tbody.innerHTML = `<tr><td class="py-8 px-6 text-center text-slate-400">Bu sayfada görüntülenebilecek kayıt bulunamadı.</td></tr>`;
+                return;
+            }
+
+            const columns = Object.keys(dataArray[0]);
+            let headerTr = '<tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider font-semibold">';
+            headerTr += `<th class="py-3.5 px-4 text-center"><input type="checkbox" onclick="toggleSelectAll(this)" class="rounded text-indigo-600"></th>`;
+            headerTr += `<th class="py-3.5 px-4">Mesaj Gönder</th>`;
+            columns.forEach(col => { headerTr += `<th class="py-3.5 px-6">${col}</th>`; });
+            if(sheetName.toLowerCase().includes('faaliyet')) headerTr += `<th class="py-3.5 px-6 text-right">Tahsilat İşlemi</th>`;
+            headerTr += '</tr>';
+            thead.innerHTML = headerTr;
+
+            dataArray.forEach((item) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+                let rowHtml = '';
+                let cariAdiVal = extractCariAdiSoyadi(item);
+
+                columns.forEach(col => {
+                    let val = item[col] !== undefined ? item[col] : "";
+                    if (col.toLowerCase().includes('tarih')) val = parseExcelDate(val);
+                    rowHtml += `<td class="py-4 px-6 text-slate-700 text-xs">${val}</td>`;
+                });
+
+                const itemJsonStr = encodeURIComponent(JSON.stringify(item));
+                let finalRowHtml = `
+                    <td class="py-4 px-4 text-center"><input type="checkbox" class="row-select-checkbox rounded text-indigo-600" data-item="${itemJsonStr}"></td>
+                    <td class="py-4 px-4">
+                        <button onclick="sendWhatsAppMessage('${itemJsonStr}', '${sheetName}')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center space-x-1">
+                            <i class="fa-brands fa-whatsapp text-sm"></i><span>Mesaj Gönder</span>
+                        </button>
+                    </td>
+                    ${rowHtml}
+                `;
+
+                if(sheetName.toLowerCase().includes('faaliyet')) {
+                    finalRowHtml += `
+                        <td class="py-4 px-6 text-right">
+                            <button onclick="openTahsilatModal('${cariAdiVal}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center space-x-1 ml-auto">
+                                <i class="fa-solid fa-receipt text-[10px]"></i><span>Tahsilatı Gör</span>
+                            </button>
+                        </td>
+                    `;
+                }
+                tr.innerHTML = finalRowHtml;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleSelectAll(masterChk) {
+            document.querySelectorAll('.row-select-checkbox').forEach(chk => { chk.checked = masterChk.checked; });
+        }
+
+        function openTahsilatModal(cariAdi) {
+            document.getElementById('tahsilat-person-info').innerText = `Seçilen Cari: ${cariAdi || 'Bilinmiyor'}`;
+            const tBody = document.getElementById('tahsilat-tbody');
+            tBody.innerHTML = '';
+            let paymentData = [];
+            if(excelWorkbookCache) {
+                const paymentSheetName = excelWorkbookCache.SheetNames.find(n => n.toLowerCase().includes('ödeme') || n.toLowerCase().includes('tahsilat'));
+                if(paymentSheetName) {
+                    paymentData = XLSX.utils.sheet_to_json(excelWorkbookCache.Sheets[paymentSheetName], { defval: "" }).filter(r => {
+                        return cariAdi && Object.values(r).join(' ').toLowerCase().includes(cariAdi.toLowerCase());
+                    });
+                }
+            }
+
+            if(paymentData.length === 0) {
+                tBody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400">Bu cariye ait ödeme/tahsilat kaydı bulunamadı.</td></tr>`;
+            } else {
+                paymentData.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50";
+                    tr.innerHTML = `
+                        <td class="py-3 px-4">${item['Yıl'] || item['yıl'] || '-'}</td>
+                        <td class="py-3 px-4 font-semibold">${item['Faaliyet'] || item['faaliyet'] || '-'}</td>
+                        <td class="py-3 px-4">${item['Ref'] || item['ref'] || '-'}</td>
+                        <td class="py-3 px-4 text-emerald-600 font-bold">${item['Ödenen'] || item['ödenen'] || '-'}</td>
+                        <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">${item['Tür'] || item['tür'] || '-'}</span></td>
+                        <td class="py-3 px-4 text-slate-500">${parseExcelDate(item['Tarih'] || item['tarih']) || '-'}</td>
+                    `;
+                    tBody.appendChild(tr);
+                });
+            }
+            document.getElementById('tahsilat-modal').classList.remove('hidden');
+        }
+
+        function closeTahsilatModal() { document.getElementById('tahsilat-modal').classList.add('hidden'); }
+
+        function filterFaaliyetTable() {
+            if(!excelWorkbookCache || !currentActiveSheetName) return;
+            const query = document.getElementById('faaliyet-search').value.toLowerCase();
+            let jsonResult = XLSX.utils.sheet_to_json(excelWorkbookCache.Sheets[currentActiveSheetName], { defval: "" });
+
+            if (currentUser && currentUser.role !== 'Admin' && !currentActiveSheetName.toLowerCase().includes('rehber')) {
+                jsonResult = jsonResult.filter(item => {
+                    const takipEdenKey = Object.keys(item).find(k => k.toLowerCase().replace(/[^a-zçğİıöşü]/g, '').includes('takipeden'));
+                    if (takipEdenKey) {
+                        const cellVal = String(item[takipEdenKey] || '').trim().toLowerCase();
+                        return cellVal === currentUser.name.trim().toLowerCase() || cellVal.includes(currentUser.name.trim().toLowerCase());
+                    }
+                    return false;
+                });
+            }
+            renderDynamicTable(jsonResult.filter(item => Object.values(item).some(val => String(val).toLowerCase().includes(query))), currentActiveSheetName);
+        }
+
+        function renderHomeFaaliyetSummary() {
+            const container = document.getElementById('home-faaliyet-summary');
+            container.innerHTML = '';
+            if(!excelWorkbookCache || !excelWorkbookCache.SheetNames) {
+                container.innerHTML = `<div class="col-span-full text-xs text-slate-400 py-2">Faaliyet özeti için lütfen Faaliyet sekmesinden bir Excel dosyası yükleyin.</div>`;
+                return;
+            }
+            excelWorkbookCache.SheetNames.forEach(sheetName => {
+                const rows = XLSX.utils.sheet_to_json(excelWorkbookCache.Sheets[sheetName], { defval: "" });
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between";
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-indigo-50 text-indigo-700">${sheetName}</span>
+                        <h4 class="text-sm font-bold text-slate-800">${rows.length} Kayıt</h4>
+                    </div>
+                    <button onclick="switchTab('faaliyet'); switchExcelSheet('${sheetName}');" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold bg-indigo-50 hover:bg-indigo-100 p-2 rounded-xl transition-all"><i class="fa-solid fa-arrow-right"></i></button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
         function renderDuyurular() {
             const container = document.getElementById('duyurular-grid');
             container.innerHTML = '';
-
             const query = document.getElementById('duyuru-search') ? document.getElementById('duyuru-search').value.toLowerCase() : '';
             let list = getAccessibleDuyurular().filter(d => d.title.toLowerCase().includes(query) || d.desc.toLowerCase().includes(query));
 
             if (list.length === 0) {
-                container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">Bu kategoride veya aramanızda görüntülenebilecek duyuru bulunmuyor.</div>`;
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">Bu kategoride veya aramanızda duyuru bulunmuyor.</div>`;
                 document.getElementById('stat-duyuru-count').innerText = 0;
                 return;
             }
@@ -707,21 +1114,6 @@
 
                 const card = document.createElement('div');
                 card.className = "bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4";
-                
-                let adminActions = '';
-                if(currentUser.role === 'Admin') {
-                    adminActions = `
-                        <div class="flex items-center space-x-2 pt-2 border-t border-slate-100">
-                            <button onclick="editDuyuru(${item.id})" class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-semibold py-2 rounded-xl transition-all flex items-center justify-center space-x-1">
-                                <i class="fa-solid fa-pen text-[10px]"></i><span>Düzenle</span>
-                            </button>
-                            <button onclick="deleteDuyuru(${item.id})" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-2 rounded-xl transition-all text-xs" title="Sil">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </div>
-                    `;
-                }
-
                 card.innerHTML = `
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
@@ -732,11 +1124,12 @@
                         <p class="text-sm text-slate-500 line-clamp-3">${item.desc}</p>
                     </div>
                     <div class="space-y-2">
-                        <button onclick="openDetailModal('duyuru', ${item.id})" class="text-indigo-600 hover:text-indigo-800 text-sm font-semibold flex items-center space-x-1">
-                            <span>Detayı İncele</span>
-                            <i class="fa-solid fa-arrow-right text-xs"></i>
-                        </button>
-                        ${adminActions}
+                        <button onclick="openDetailModal('duyuru', ${item.id})" class="text-indigo-600 hover:text-indigo-800 text-sm font-semibold flex items-center space-x-1"><span>Detayı İncele</span><i class="fa-solid fa-arrow-right text-xs"></i></button>
+                        ${currentUser.role === 'Admin' ? `
+                        <div class="flex items-center space-x-2 pt-2 border-t border-slate-100">
+                            <button onclick="editDuyuru(${item.id})" class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-semibold py-2 rounded-xl transition-all flex items-center justify-center space-x-1"><i class="fa-solid fa-pen text-[10px]"></i><span>Düzenle</span></button>
+                            <button onclick="deleteDuyuru(${item.id})" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-2 rounded-xl transition-all text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>` : ''}
                     </div>
                 `;
                 container.appendChild(card);
@@ -744,11 +1137,9 @@
             document.getElementById('stat-duyuru-count').innerText = list.length;
         }
 
-        // Render Etkinlikler
         function renderEtkinlikler() {
             const container = document.getElementById('etkinlikler-grid');
             container.innerHTML = '';
-
             const query = document.getElementById('etkinlik-search') ? document.getElementById('etkinlik-search').value.toLowerCase() : '';
             let list = etkinlikler.filter(e => e.title.toLowerCase().includes(query) || e.desc.toLowerCase().includes(query));
 
@@ -761,21 +1152,6 @@
             list.forEach(item => {
                 const card = document.createElement('div');
                 card.className = "bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4";
-                
-                let adminActions = '';
-                if(currentUser.role === 'Admin') {
-                    adminActions = `
-                        <div class="flex items-center space-x-2 pt-2 border-t border-slate-100">
-                            <button onclick="editEtkinlik(${item.id})" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold py-2 rounded-xl transition-all flex items-center justify-center space-x-1">
-                                <i class="fa-solid fa-pen text-[10px]"></i><span>Düzenle</span>
-                            </button>
-                            <button onclick="deleteEtkinlik(${item.id})" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-2 rounded-xl transition-all text-xs" title="Sil">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </div>
-                    `;
-                }
-
                 card.innerHTML = `
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
@@ -790,11 +1166,12 @@
                         <p class="text-sm text-slate-500 line-clamp-2">${item.desc}</p>
                     </div>
                     <div class="space-y-2">
-                        <button onclick="openDetailModal('etkinlik', ${item.id})" class="text-indigo-600 hover:text-indigo-800 text-sm font-semibold flex items-center space-x-1">
-                            <span>Etkinlik Detayı</span>
-                            <i class="fa-solid fa-arrow-right text-xs"></i>
-                        </button>
-                        ${adminActions}
+                        <button onclick="openDetailModal('etkinlik', ${item.id})" class="text-indigo-600 hover:text-indigo-800 text-sm font-semibold flex items-center space-x-1"><span>Etkinlik Detayı</span><i class="fa-solid fa-arrow-right text-xs"></i></button>
+                        ${currentUser.role === 'Admin' ? `
+                        <div class="flex items-center space-x-2 pt-2 border-t border-slate-100">
+                            <button onclick="editEtkinlik(${item.id})" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold py-2 rounded-xl transition-all flex items-center justify-center space-x-1"><i class="fa-solid fa-pen text-[10px]"></i><span>Düzenle</span></button>
+                            <button onclick="deleteEtkinlik(${item.id})" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-2 rounded-xl transition-all text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>` : ''}
                     </div>
                 `;
                 container.appendChild(card);
@@ -802,18 +1179,13 @@
             document.getElementById('stat-etkinlik-count').innerText = list.length;
         }
 
-        // Üye Listesi & Yetkilendirme
         function renderUyeler() {
             const tbody = document.getElementById('uyeler-tbody');
             tbody.innerHTML = '';
-
             users.forEach(u => {
                 const isMe = u.username === currentUser.username;
                 const tr = document.createElement('tr');
                 tr.className = isMe ? "bg-indigo-50/40 font-medium" : "hover:bg-slate-50/80 transition-colors";
-                
-                let catsHtml = u.categories.map(c => `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 mr-1">${c}</span>`).join('');
-
                 tr.innerHTML = `
                     <td class="py-4 px-6 text-slate-800 flex items-center space-x-2">
                         <span class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-user"></i></span>
@@ -823,12 +1195,9 @@
                         </div>
                     </td>
                     <td class="py-4 px-6 text-slate-600 text-xs">${u.email}</td>
-                    <td class="py-4 px-6 text-slate-600 text-xs font-mono">••••</td>
                     <td class="py-4 px-6 text-slate-700 text-xs font-semibold">${u.task}</td>
-                    <td class="py-4 px-6">${catsHtml}</td>
-                    <td class="py-4 px-6">
-                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${u.role === 'Admin' ? 'bg-purple-50 text-purple-700 border border-purple-100' : 'bg-slate-100 text-slate-700'}">${u.role}</span>
-                    </td>
+                    <td class="py-4 px-6">${(u.categories || []).map(c => `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 mr-1">${c}</span>`).join('')}</td>
+                    <td class="py-4 px-6"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${u.role === 'Admin' ? 'bg-purple-50 text-purple-700 border border-purple-100' : 'bg-slate-100 text-slate-700'}">${u.role}</span></td>
                     <td class="py-4 px-6 text-right space-x-2">
                         <button onclick="editUser('${u.username}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-2 rounded-lg transition-all" title="Düzenle"><i class="fa-solid fa-pen text-xs"></i></button>
                         ${!isMe ? `<button onclick="deleteUser('${u.username}')" class="text-rose-600 hover:text-rose-900 bg-rose-50 p-2 rounded-lg transition-all" title="Sil"><i class="fa-solid fa-trash text-xs"></i></button>` : ''}
@@ -839,22 +1208,22 @@
         }
 
         function openUserModal(editUsername = null) {
-            const container = document.getElementById('modal-user-categories-container');
-            container.innerHTML = '';
+            const catContainer = document.getElementById('modal-user-categories-container');
+            const menuContainer = document.getElementById('modal-user-menus-container');
+            catContainer.innerHTML = '';
+            menuContainer.innerHTML = '';
             
             allAvailableCategories.forEach(cat => {
-                container.innerHTML += `
-                    <label class="flex items-center space-x-1.5 cursor-pointer">
-                        <input type="checkbox" name="user-cat" value="${cat}" class="rounded text-indigo-600 focus:ring-indigo-500">
-                        <span class="text-slate-700">${cat}</span>
-                    </label>
-                `;
+                catContainer.innerHTML += `<label class="flex items-center space-x-1.5 cursor-pointer"><input type="checkbox" name="user-cat" value="${cat}" class="rounded text-indigo-600 focus:ring-indigo-500"><span class="text-slate-700">${cat}</span></label>`;
+            });
+
+            allMenus.forEach(m => {
+                menuContainer.innerHTML += `<label class="flex items-center space-x-1.5 cursor-pointer"><input type="checkbox" name="user-menu" value="${m.id}" class="rounded text-indigo-600 focus:ring-indigo-500" ${m.id === 'anasayfa' ? 'checked' : ''}><span class="text-slate-700">${m.name}</span></label>`;
             });
 
             if(editUsername) {
                 const target = users.find(u => u.username === editUsername);
                 if(!target) return;
-
                 document.getElementById('user-modal-title').innerHTML = `<i class="fa-solid fa-user-pen text-indigo-600"></i> <span>Üye Bilgilerini Düzenle</span>`;
                 document.getElementById('edit-original-username').value = target.username;
                 document.getElementById('modal-user-name').value = target.name;
@@ -864,15 +1233,14 @@
                 document.getElementById('modal-user-task').value = target.task;
                 document.getElementById('modal-user-role').value = target.role;
 
-                document.querySelectorAll('input[name="user-cat"]').forEach(chk => {
-                    if(target.categories.includes(chk.value)) chk.checked = true;
-                });
+                document.querySelectorAll('input[name="user-cat"]').forEach(chk => { if((target.categories || []).includes(chk.value)) chk.checked = true; });
+                document.querySelectorAll('input[name="user-menu"]').forEach(chk => { if((target.allowedMenus || []).includes(chk.value)) chk.checked = true; });
             } else {
                 document.getElementById('user-modal-title').innerHTML = `<i class="fa-solid fa-user-plus text-indigo-600"></i> <span>Yeni Üye Ekle</span>`;
                 document.getElementById('user-form').reset();
                 document.getElementById('edit-original-username').value = '';
+                document.querySelectorAll('input[name="user-menu"]').forEach(chk => { if(chk.value === 'anasayfa') chk.checked = true; });
             }
-
             document.getElementById('user-modal').classList.remove('hidden');
         }
 
@@ -892,9 +1260,12 @@
             const role = document.getElementById('modal-user-role').value;
 
             const selectedCategories = [];
-            document.querySelectorAll('input[name="user-cat"]:checked').forEach(chk => {
-                selectedCategories.push(chk.value);
-            });
+            document.querySelectorAll('input[name="user-cat"]:checked').forEach(chk => selectedCategories.push(chk.value));
+
+            const selectedMenus = [];
+            document.querySelectorAll('input[name="user-menu"]:checked').forEach(chk => selectedMenus.push(chk.value));
+
+            if (selectedMenus.length === 0) { alert("Lütfen kullanıcının erişebileceği en az bir menü seçin!"); return; }
 
             if(originalUsername) {
                 const target = users.find(u => u.username === originalUsername);
@@ -906,31 +1277,35 @@
                     target.task = task;
                     target.role = role;
                     target.categories = selectedCategories;
+                    target.allowedMenus = selectedMenus;
+
+                    // Güncellenen kullanıcı şu an oturum açmış olan kullanıcı ise izinleri anında sisteme yansıt
+                    if (currentUser && currentUser.username === originalUsername) {
+                        currentUser = target;
+                        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        buildNavigation();
+                    }
                 }
             } else {
-                if(users.some(u => u.username === username)) {
-                    alert("Bu kullanıcı adı zaten kullanımda!");
-                    return;
-                }
-                users.push({ username, pass, name, email, task, categories: selectedCategories, role });
+                if(users.some(u => u.username === username)) { alert("Bu kullanıcı adı zaten kullanımda!"); return; }
+                users.push({ username, pass, name, email, task, categories: selectedCategories, role, allowedMenus: selectedMenus });
             }
 
+            localStorage.setItem('takipport_users', JSON.stringify(users));
             renderUyeler();
             closeUserModal();
         }
 
-        function editUser(username) {
-            openUserModal(username);
-        }
+        function editUser(username) { openUserModal(username); }
 
         function deleteUser(username) {
             if(confirm("Bu üyeyi silmek istediğinize emin misiniz?")) {
                 users = users.filter(u => u.username !== username);
+                localStorage.setItem('takipport_users', JSON.stringify(users));
                 renderUyeler();
             }
         }
 
-        // Profilim
         function renderProfil() {
             document.getElementById('profile-name').innerText = currentUser.name;
             document.getElementById('profile-role-desc').innerText = currentUser.role + " Hesabı";
@@ -940,7 +1315,7 @@
 
             const catContainer = document.getElementById('profile-categories');
             catContainer.innerHTML = '';
-            currentUser.categories.forEach(c => {
+            (currentUser.categories || []).forEach(c => {
                 const span = document.createElement('span');
                 span.className = "px-3 py-1 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100";
                 span.innerText = c;
@@ -952,39 +1327,26 @@
             e.preventDefault();
             const newP = document.getElementById('new-password').value.trim();
             if(!newP) return;
-
             currentUser.pass = newP;
             const target = users.find(u => u.username === currentUser.username);
             if(target) target.pass = newP;
-
+            localStorage.setItem('takipport_users', JSON.stringify(users));
             sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
             alert("Şifreniz başarıyla güncellendi!");
             document.getElementById('new-password').value = '';
         }
 
-        // Login Logs
         function renderLoginLogs() {
             const tbody = document.getElementById('giris-takip-tbody');
             tbody.innerHTML = '';
-
-            if(loginLogs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">Kayıt bulunamadı.</td></tr>`;
-                return;
-            }
-
+            if(loginLogs.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">Kayıt bulunamadı.</td></tr>`; return; }
             loginLogs.forEach(log => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50/80 transition-colors";
-                
-                let badgeStyle = "bg-emerald-50 text-emerald-700 border-emerald-100";
-                if(log.action === "Çıkış Yapıldı") {
-                    badgeStyle = "bg-rose-50 text-rose-700 border-rose-100";
-                }
-
                 tr.innerHTML = `
                     <td class="py-4 px-6 font-semibold text-slate-800">@${log.username}</td>
                     <td class="py-4 px-6 text-slate-700 text-xs">${log.name}</td>
-                    <td class="py-4 px-6"><span class="px-2.5 py-1 rounded-full text-xs font-semibold border ${badgeStyle}">${log.action}</span></td>
+                    <td class="py-4 px-6"><span class="px-2.5 py-1 rounded-full text-xs font-semibold border ${log.action === "Çıkış Yapıldı" ? "bg-rose-50 text-rose-700 border-rose-100" : "bg-emerald-50 text-emerald-700 border-emerald-100"}">${log.action}</span></td>
                     <td class="py-4 px-6 text-slate-500 text-xs">${log.info}</td>
                     <td class="py-4 px-6 text-slate-500 text-xs">${log.date}</td>
                 `;
@@ -992,34 +1354,14 @@
             });
         }
 
-        function clearLoginLogs() {
-            loginLogs = [];
-            renderLoginLogs();
-        }
+        function clearLoginLogs() { loginLogs = []; localStorage.removeItem('loginLogs'); renderLoginLogs(); }
 
         function renderHomeLists() {
-            const homeDuyuru = document.getElementById('home-duyurular-list');
-            homeDuyuru.innerHTML = '';
-            getAccessibleDuyurular().slice(0, 3).forEach(item => {
-                const div = document.createElement('div');
-                div.className = "p-3 rounded-xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100 cursor-pointer flex items-start justify-between space-x-3";
-                div.onclick = () => openDetailModal('duyuru', item.id);
-                div.innerHTML = `
-                    <div class="space-y-1">
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700">${item.category}</span>
-                        <h4 class="text-sm font-semibold text-slate-800">${item.title}</h4>
-                        <p class="text-xs text-slate-400">${item.date}</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-slate-300 self-center"></i>
-                `;
-                homeDuyuru.appendChild(div);
-            });
-
             const homeEtkinlik = document.getElementById('home-etkinlikler-list');
             homeEtkinlik.innerHTML = '';
             etkinlikler.slice(0, 3).forEach(item => {
                 const div = document.createElement('div');
-                div.className = "p-3 rounded-xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100 cursor-pointer flex items-start justify-between space-x-3";
+                div.className = "p-3 rounded-xl hover:bg-slate-50 transition-all border border-slate-100 cursor-pointer flex items-start justify-between space-x-3";
                 div.onclick = () => openDetailModal('etkinlik', item.id);
                 div.innerHTML = `
                     <div class="space-y-1">
@@ -1033,14 +1375,12 @@
             });
         }
 
-        // Etkinlik Ekle / Düzenle / Sil
         function openEtkinlikModal(editId = null) {
             if(currentUser.role !== 'Admin') return;
-            
             if(editId) {
                 const item = etkinlikler.find(e => e.id === editId);
                 if(!item) return;
-                document.getElementById('etkinlik-modal-title').innerHTML = `<i class="fa-solid fa-pen text-emerald-600"></i> <span>Etkinliği Düzenle</span>`;
+                document.getElementById('etkinlik-modal-heading').innerHTML = `<i class="fa-solid fa-pen text-emerald-600"></i> <span>Etkinliği Düzenle</span>`;
                 document.getElementById('edit-original-etkinlik-id').value = item.id;
                 document.getElementById('etkinlik-modal-title').value = item.title;
                 document.getElementById('etkinlik-modal-date').value = item.date;
@@ -1048,17 +1388,14 @@
                 document.getElementById('etkinlik-modal-location').value = item.location;
                 document.getElementById('etkinlik-modal-desc').value = item.desc;
             } else {
-                document.getElementById('etkinlik-modal-title').innerHTML = `<i class="fa-solid fa-calendar-days text-emerald-600"></i> <span>Yeni Etkinlik Ekle</span>`;
+                document.getElementById('etkinlik-modal-heading').innerHTML = `<i class="fa-solid fa-calendar-days text-emerald-600"></i> <span>Yeni Etkinlik Ekle</span>`;
                 document.getElementById('etkinlik-form').reset();
                 document.getElementById('edit-original-etkinlik-id').value = '';
             }
             document.getElementById('etkinlik-modal').classList.remove('hidden');
         }
 
-        function closeEtkinlikModal() {
-            document.getElementById('etkinlik-modal').classList.add('hidden');
-            document.getElementById('etkinlik-form').reset();
-        }
+        function closeEtkinlikModal() { document.getElementById('etkinlik-modal').classList.add('hidden'); document.getElementById('etkinlik-form').reset(); }
 
         function handleEtkinlikSubmit(e) {
             e.preventDefault();
@@ -1071,66 +1408,47 @@
 
             if(editId) {
                 const target = etkinlikler.find(e => e.id == editId);
-                if(target) {
-                    target.title = title;
-                    target.date = date;
-                    target.category = category;
-                    target.location = location;
-                    target.desc = desc;
-                }
+                if(target) { target.title = title; target.date = date; target.category = category; target.location = location; target.desc = desc; }
             } else {
-                etkinlikler.unshift({
-                    id: Date.now(),
-                    title,
-                    date,
-                    location,
-                    category,
-                    desc
-                });
+                etkinlikler.unshift({ id: Date.now(), title, date, location, category, desc });
             }
-
+            localStorage.setItem('takipport_etkinlikler', JSON.stringify(etkinlikler));
             renderEtkinlikler();
             renderHomeLists();
             closeEtkinlikModal();
         }
 
-        function editEtkinlik(id) {
-            openEtkinlikModal(id);
-        }
+        function editEtkinlik(id) { openEtkinlikModal(id); }
 
         function deleteEtkinlik(id) {
             if(confirm("Bu etkinliği silmek istediğinize emin misiniz?")) {
                 etkinlikler = etkinlikler.filter(e => e.id !== id);
+                localStorage.setItem('takipport_etkinlikler', JSON.stringify(etkinlikler));
                 renderEtkinlikler();
                 renderHomeLists();
             }
         }
 
-        // Duyuru Ekle / Düzenle / Sil
         function openDuyuruModal(editId = null) {
             if(currentUser.role !== 'Admin') return;
-
             if(editId) {
                 const item = duyurular.find(d => d.id === editId);
                 if(!item) return;
-                document.getElementById('duyuru-modal-title').innerHTML = `<i class="fa-solid fa-pen text-amber-600"></i> <span>Duyuruyu Düzenle</span>`;
+                document.getElementById('duyuru-modal-heading').innerHTML = `<i class="fa-solid fa-pen text-amber-600"></i> <span>Duyuruyu Düzenle</span>`;
                 document.getElementById('edit-original-duyuru-id').value = item.id;
                 document.getElementById('duyuru-modal-title').value = item.title;
                 document.getElementById('duyuru-modal-category').value = item.category;
                 document.getElementById('duyuru-modal-date').value = item.date;
                 document.getElementById('duyuru-modal-desc').value = item.desc;
             } else {
-                document.getElementById('duyuru-modal-title').innerHTML = `<i class="fa-solid fa-bullhorn text-amber-600"></i> <span>Yeni Duyuru Ekle</span>`;
+                document.getElementById('duyuru-modal-heading').innerHTML = `<i class="fa-solid fa-bullhorn text-amber-600"></i> <span>Yeni Duyuru Ekle</span>`;
                 document.getElementById('duyuru-form').reset();
                 document.getElementById('edit-original-duyuru-id').value = '';
             }
             document.getElementById('duyuru-modal').classList.remove('hidden');
         }
 
-        function closeDuyuruModal() {
-            document.getElementById('duyuru-modal').classList.add('hidden');
-            document.getElementById('duyuru-form').reset();
-        }
+        function closeDuyuruModal() { document.getElementById('duyuru-modal').classList.add('hidden'); document.getElementById('duyuru-form').reset(); }
 
         function handleDuyuruSubmit(e) {
             e.preventDefault();
@@ -1142,34 +1460,22 @@
 
             if(editId) {
                 const target = duyurular.find(d => d.id == editId);
-                if(target) {
-                    target.title = title;
-                    target.category = category;
-                    target.date = date;
-                    target.desc = desc;
-                }
+                if(target) { target.title = title; target.category = category; target.date = date; target.desc = desc; }
             } else {
-                duyurular.unshift({
-                    id: Date.now(),
-                    title,
-                    category,
-                    date,
-                    desc
-                });
+                duyurular.unshift({ id: Date.now(), title, category, date, desc });
             }
-
+            localStorage.setItem('takipport_duyurular', JSON.stringify(duyurular));
             renderDuyurular();
             renderHomeLists();
             closeDuyuruModal();
         }
 
-        function editDuyuru(id) {
-            openDuyuruModal(id);
-        }
+        function editDuyuru(id) { openDuyuruModal(id); }
 
         function deleteDuyuru(id) {
             if(confirm("Bu duyuruyu silmek istediğinize emin misiniz?")) {
                 duyurular = duyurular.filter(d => d.id !== id);
+                localStorage.setItem('takipport_duyurular', JSON.stringify(duyurular));
                 renderDuyurular();
                 renderHomeLists();
             }
@@ -1178,7 +1484,6 @@
         function openDetailModal(type, id) {
             let item = (type === 'duyuru') ? duyurular.find(d => d.id === id) : etkinlikler.find(e => e.id === id);
             if(!item) return;
-
             document.getElementById('detail-badge').innerText = item.category;
             document.getElementById('detail-title').innerText = item.title;
             document.getElementById('detail-date-text').innerText = item.date + (item.location ? ` • ${item.location}` : '');
@@ -1186,9 +1491,7 @@
             document.getElementById('detail-modal').classList.remove('hidden');
         }
 
-        function closeDetailModal() {
-            document.getElementById('detail-modal').classList.add('hidden');
-        }
+        function closeDetailModal() { document.getElementById('detail-modal').classList.add('hidden'); }
     </script>
 </body>
 </html>
